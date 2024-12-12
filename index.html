@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יוצר לינקים למייל</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5B5FEF;
+            --primary-hover: #4A4EE4;
+            --surface: #F1F5F9;
+            --surface-2: #E2E8F0;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --border: #E5E7EB;
+            --success: #059669;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: #fcfcfc;
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        h2 {
+            color: var(--text);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-hover) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.125rem;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 0;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .form-group:hover {
+            border-color: var(--primary);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            padding-right: 2px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            color: var(--text);
+            font-family: inherit;
+            box-shadow: var(--shadow-sm);
+        }
+
+        input:hover, textarea:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 95, 239, 0.08);
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        button {
+            padding: 14px 24px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:first-child {
+            color: var(--primary);
+            background: white;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        button:first-child:hover {
+            border-color: var(--primary);
+            background: rgba(91, 95, 239, 0.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        button:last-child {
+            color: white;
+            background: var(--primary);
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(91, 95, 239, 0.25);
+        }
+
+        button:last-child:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(91, 95, 239, 0.3);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        #copyStatus {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #copyStatus.show {
+            opacity: 1;
+            transform: translate(-50%, -12px);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px;
+                height: 100dvh;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 16px;
+                border-radius: 20px;
+                transform: scale(0.9);
+            }
+
+            input, textarea {
+                padding: 8px 12px;
+            }
+
+            textarea {
+                height: 80px;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .subtitle {
+                margin-bottom: 1.5rem;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>יוצר לינקים למייל</h2>
+        <p class="subtitle">צור בקלות קישורים למייל עם כל הפרטים הדרושים</p>
+        
+        <div class="form-group">
+            <label>כתובת מייל</label>
+            <input type="email" id="to" required>
+        </div>
+
+        <div class="form-group">
+            <label>עותק (CC)</label>
+            <input type="email" id="cc">
+        </div>
+
+        <div class="form-group">
+            <label>עותק מוסתר (BCC)</label>
+            <input type="email" id="bcc">
+        </div>
+
+        <div class="form-group">
+            <label>נושא</label>
+            <input type="text" id="subject">
+        </div>
+
+        <div class="form-group">
+            <label>תוכן</label>
+            <textarea id="body"></textarea>
+        </div>
+
+        <div class="buttons">
+            <button onclick="copyMailto()">העתק לינק ל-Mailto</button>
+            <button onclick="copyLink()">העתק לינק ל-Gmail</button>
+        </div>
+    </div>
+
+    <div id="copyStatus"></div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('to')) document.getElementById('to').value = urlParams.get('to');
+            if (urlParams.has('cc')) document.getElementById('cc').value = urlParams.get('cc');
+            if (urlParams.has('bcc')) document.getElementById('bcc').value = urlParams.get('bcc');
+            if (urlParams.has('subject')) document.getElementById('subject').value = urlParams.get('subject');
+            if (urlParams.has('body')) document.getElementById('body').value = urlParams.get('body');
+        }
+
+        function generateMailto() {
+            let to = document.getElementById('to').value;
+            let cc = document.getElementById('cc').value;
+            let bcc = document.getElementById('bcc').value;
+            let subject = document.getElementById('subject').value;
+            let body = document.getElementById('body').value;
+
+            let mailto = `mailto:${to}`;
+            let params = [];
+
+            if (cc) params.push(`cc=${encodeURIComponent(cc).replace(/%40/g, '@')}`);
+            if (bcc) params.push(`bcc=${encodeURIComponent(bcc).replace(/%40/g, '@')}`);
+            if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+            if (body) params.push(`body=${encodeURIComponent(body)}`);
+
+            if (params.length > 0) {
+                mailto += '?' + params.join('&');
+            }
+
+            return mailto;
+        }
+
+        async function copyMailto() {
+            try {
+                await navigator.clipboard.writeText(generateMailto());
+                showCopyStatus('הועתק לינק למייל!');
+            } catch (err) {
+                const textArea = document.createElement('textarea');
+                textArea.value = generateMailto();
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyStatus('הועתק לינק למייל!');
+                } catch (err) {
+                    showCopyStatus('לא ניתן להעתיק, נסה להעתיק ידנית');
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        async function copyLink() {
+            let to = document.getElementById('to').value;
+            let cc = document.getElementById('cc').value;
+            let bcc = document.getElementById('bcc').value;
+            let subject = document.getElementById('subject').value;
+            let body = document.getElementById('body').value;
+
+            let gmailUrl = 'https://mail.google.com/mail/u/0/?';
+            let params = ['view=cm', 'fs=1'];
+            
+            if (to) params.push(`to=${encodeURIComponent(to)}`);
+            if (cc) params.push(`cc=${encodeURIComponent(cc)}`);
+            if (bcc) params.push(`bcc=${encodeURIComponent(bcc)}`);
+            if (subject) params.push(`su=${encodeURIComponent(subject)}`);
+            if (body) params.push(`body=${encodeURIComponent(body)}`);
+
+            let finalUrl = gmailUrl + params.join('&');
+            
+            try {
+                await navigator.clipboard.writeText(finalUrl);
+                showCopyStatus('הועתק לינק ל-Gmail!');
+            } catch (err) {
+                const textArea = document.createElement('textarea');
+                textArea.value = finalUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyStatus('הועתק לינק ל-Gmail!');
+                } catch (err) {
+                    showCopyStatus('לא ניתן להעתיק, נסה להעתיק ידנית');
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function showCopyStatus(message) {
+            let status = document.getElementById('copyStatus');
+            status.textContent = message;
+            status.classList.add('show');
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html> 
