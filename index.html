@@ -4,19 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>יוצר לינקים למייל</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzVCNUZFRiIgZD0iTTIwIDRINEMyLjkgNCAyIDQuOSAyIDZ2MTJjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY2YzAtMS4xLS45LTItMi0yek0yMCA4bC04IDVsLTgtNVY2bDggNWw4LTV2MnoiLz48L3N2Zz4=">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #5B5FEF;
             --primary-hover: #4A4EE4;
-            --surface: #F1F5F9;
-            --surface-2: #E2E8F0;
-            --text: #0F172A;
-            --text-secondary: #475569;
-            --border: #E5E7EB;
-            --success: #059669;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04);
+            
+            /* צבעים למצב כהה */
+            --text: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --bg: #1E293B;
+            --bg-gradient: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            --container-bg: #293548;
+            --input-bg: #1E293B;
+            --border: #475569;
+            --button-bg: #334155;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        :root[data-theme="light"] {
+            --text: #334155;
+            --text-secondary: #64748B;
+            --bg: #F8FAFC;
+            --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            --container-bg: #FFFFFF;
+            --input-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --button-bg: #FFFFFF;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -27,7 +47,7 @@
 
         body {
             font-family: 'Heebo', sans-serif;
-            background: #fcfcfc;
+            background: var(--bg-gradient);
             color: var(--text);
             height: 100vh;
             overflow: hidden;
@@ -39,13 +59,42 @@
         }
 
         .container {
+            position: relative;
             width: 100%;
             max-width: 640px;
-            background: white;
+            background: var(--container-bg);
             border-radius: 24px;
             padding: 40px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(24px);
+            max-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* עיצוב פס הגלילה עבור Chrome/Safari */
+        .container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .container::-webkit-scrollbar-thumb:hover {
+            background-color: var(--primary-hover);
         }
 
         h2 {
@@ -73,7 +122,7 @@
 
         .form-group {
             margin-bottom: 1.5rem;
-            background: white;
+            background: var(--container-bg);
             padding: 0;
             border-radius: 12px;
             transition: all 0.2s ease;
@@ -88,7 +137,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: var(--text);
             font-size: 0.875rem;
             padding-right: 2px;
         }
@@ -97,7 +146,7 @@
             width: 100%;
             padding: 12px 16px;
             font-size: 1rem;
-            background: white;
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
             transition: all 0.2s ease;
@@ -108,13 +157,14 @@
 
         input:hover, textarea:hover {
             border-color: var(--primary);
-            box-shadow: var(--shadow-md);
+            background: var(--input-bg);
         }
 
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(91, 95, 239, 0.08);
+            background: var(--input-bg);
+            box-shadow: 0 0 0 3px rgba(91, 95, 239, 0.15);
         }
 
         textarea {
@@ -122,12 +172,40 @@
             resize: none;
         }
 
+        .buttons-container {
+            margin-top: 2rem;
+            position: relative;
+            min-height: 48px;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            opacity: 1;
+            transition: all 0.3s ease;
+            background: var(--container-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .placeholder-text::before {
+            content: '✨';
+        }
+
+        .placeholder-text::after {
+            content: '✨';
+        }
+
         .buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
-            margin-top: 2rem;
-            position: relative;
         }
 
         button {
@@ -144,15 +222,48 @@
 
         button:first-child {
             color: var(--primary);
-            background: white;
+            background: var(--button-bg);
             border: 1px solid var(--border);
             box-shadow: var(--shadow-sm);
         }
 
         button:first-child:hover {
             border-color: var(--primary);
-            background: rgba(91, 95, 239, 0.05);
-            box-shadow: var(--shadow-md);
+            background: var(--button-bg);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: all !important;
+        }
+
+        button:disabled:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 1;
+            z-index: 1;
+        }
+
+        button:disabled:hover::before {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--primary);
         }
 
         button:last-child {
@@ -160,12 +271,12 @@
             background: var(--primary);
             border: none;
             font-weight: 600;
-            box-shadow: 0 2px 8px rgba(91, 95, 239, 0.25);
+            box-shadow: 0 4px 12px rgba(91, 95, 239, 0.3);
         }
 
         button:last-child:hover {
             background: var(--primary-hover);
-            box-shadow: 0 4px 12px rgba(91, 95, 239, 0.3);
+            box-shadow: 0 8px 16px rgba(91, 95, 239, 0.4);
             transform: translateY(-1px);
         }
 
@@ -178,8 +289,8 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
+            background: var(--container-bg);
+            color: var(--text);
             padding: 12px 24px;
             border-radius: 99px;
             font-size: 0.875rem;
@@ -187,8 +298,8 @@
             opacity: 0;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-md);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
         }
 
         #copyStatus.show {
@@ -204,76 +315,443 @@
             }
             
             .container {
-                padding: 16px;
+                padding: 24px 16px;
                 border-radius: 20px;
-                transform: scale(0.9);
+                transform: none;
+                max-height: calc(100dvh - 32px);
             }
 
+            /* טוגלים */
+            .theme-toggle,
+            .lang-toggle {
+                transform: scale(0.7);
+                top: 0.75rem;
+            }
+            .theme-toggle { left: 0.75rem; }
+            .lang-toggle { right: 0.75rem; }
+
+            /* כותרות */
+            h2 {
+                font-size: 1.5rem;
+                margin-top: 32px;
+            }
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            /* שדות */
+            .form-group {
+                margin-bottom: 1rem;
+            }
             input, textarea {
-                padding: 8px 12px;
+                padding: 12px;
+                font-size: 16px;  /* מניעת זום באייפון */
             }
-
             textarea {
                 height: 80px;
             }
 
-            .form-group {
-                margin-bottom: 1rem;
-            }
-
-            .subtitle {
-                margin-bottom: 1.5rem;
-            }
-
+            /* כפתורים */
             .buttons {
                 grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            button {
+                padding: 12px;
+                font-size: 0.875rem;
+                min-height: 44px;
+            }
+            .buttons-section {
+                margin-top: 0.75rem;
             }
 
-            h2 {
-                font-size: 1.5rem;
+            /* פס גלילה */
+            .container::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            /* הודעת העתקה */
+            #copyStatus {
+                bottom: 16px;
+                padding: 10px 20px;
+                font-size: 0.8125rem;
+            }
+        }
+
+        .theme-toggle,
+        .lang-toggle {
+            position: absolute;
+            top: 1.5rem;
+            z-index: 1000;
+            transform: scale(0.8);
+            direction: ltr !important;
+        }
+
+        .theme-toggle { left: 1.5rem; }
+        .lang-toggle { right: 1.5rem; }
+
+        .theme-toggle input,
+        .lang-toggle input {
+            display: none;
+        }
+
+        .theme-toggle-slider,
+        .lang-toggle-slider {
+            position: relative;
+            width: 100px;
+            height: 45px;
+            background: var(--button-bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .theme-toggle-slider::after,
+        .lang-toggle-slider::after {
+            content: '';
+            position: absolute;
+            width: 37px;
+            height: 37px;
+            background: linear-gradient(45deg, var(--primary), #4f46e5);
+            mix-blend-mode: multiply;
+            border-radius: 50%;
+            top: 4px;
+            right: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1;
+        }
+
+        .theme-toggle-icons,
+        .lang-toggle-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            pointer-events: none;
+        }
+
+        .theme-toggle-icons svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+            stroke: white;
+            stroke-width: 0.75px;
+            transition: all 0.3s ease;
+            mix-blend-mode: screen;
+            filter: brightness(1.5);
+            z-index: 2;
+        }
+
+        .lang-toggle-icons span {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+            mix-blend-mode: screen;
+            filter: brightness(1.5);
+            z-index: 2;
+        }
+
+        .sun-icon, .en-icon { opacity: 0.25; }
+        .moon-icon, .he-icon { opacity: 1; }
+
+        .theme-toggle input:checked + .theme-toggle-slider::after,
+        .lang-toggle input:checked + .lang-toggle-slider::after {
+            right: calc(100% - 41px);
+        }
+
+        .theme-toggle input:checked + .theme-toggle-slider .sun-icon,
+        .lang-toggle input:checked + .lang-toggle-slider .en-icon {
+            opacity: 1;
+        }
+
+        .theme-toggle input:checked + .theme-toggle-slider .moon-icon,
+        .lang-toggle input:checked + .lang-toggle-slider .he-icon {
+            opacity: 0.25;
+        }
+
+        :root[data-theme="light"] .theme-toggle-icons svg,
+        :root[data-theme="light"] .lang-toggle-icons span {
+            fill: #1e293b;
+            stroke: #1e293b;
+            color: #1e293b;
+            mix-blend-mode: multiply;
+        }
+
+        :root[data-theme="light"] .theme-toggle-slider,
+        :root[data-theme="light"] .lang-toggle-slider {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .validation-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .validation-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: 10px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--primary);
+        }
+
+        .validation-tooltip::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-4px);
+        }
+
+        .add-fields-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            margin: -8px 0 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .add-fields-button:hover {
+            background: rgba(91, 95, 239, 0.08);
+        }
+
+        .add-fields-button svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .add-fields-button.active svg {
+            transform: rotate(180deg);
+        }
+
+        .additional-fields {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .additional-fields.visible {
+            max-height: 200px;  /* מספיק גבוה בשל שני השדות */
+        }
+
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-right: -8px;
+        }
+
+        .buttons-section {
+            margin-top: 0;
+        }
+
+        .add-fields-button {
+            margin: 1rem auto;  /* מירכוז */
+            width: fit-content;
+        }
+
+        @media (max-width: 640px) {
+            .buttons {
+                gap: 8px;  /* הקטנת הרווח */
+            }
+
+            button {
+                padding: 12px;  /* הקטנת הפדינג */
+                font-size: 0.875rem;
+                min-height: 44px;  /* גובה מינימלי לנגישות */
+            }
+
+            .add-fields-button {
+                padding: 8px 12px;
+                font-size: 0.8125rem;
+                margin: 0.5rem auto;
+            }
+
+            .buttons-section {
+                margin-top: 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme">
+            <div class="theme-toggle-slider">
+                <div class="theme-toggle-icons">
+                    <svg class="sun-icon" height="24" width="24" viewBox="0 0 24 24">
+                        <path d="M12,17c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5ZM13,0h-2V5h2V0Zm0,19h-2v5h2v-5ZM5,11H0v2H5v-2Zm19,0h-5v2h5v-2Zm-2.81-6.78l-1.41-1.41-3.54,3.54,1.41,1.41,3.54-3.54ZM7.76,17.66l-1.41-1.41-3.54,3.54,1.41,1.41,3.54-3.54Zm0-11.31l-3.54-3.54-1.41,1.41,3.54,3.54,1.41-1.41Zm13.44,13.44l-3.54-3.54-1.41,1.41,3.54,3.54,1.41-1.41Z"/>
+                    </svg>
+                    <svg class="moon-icon" height="24" width="24" viewBox="0 0 24 24">
+                        <path d="M12.009,24A12.067,12.067,0,0,1,.075,10.725,12.121,12.121,0,0,1,10.1.152a13,13,0,0,1,5.03.206,2.5,2.5,0,0,1,1.8,1.8,2.47,2.47,0,0,1-.7,2.425c-4.559,4.168-4.165,10.645.807,14.412h0a2.5,2.5,0,0,1-.7,4.319A13.875,13.875,0,0,1,12.009,24Z"/>
+                    </svg>
+                </div>
+            </div>
+        </label>
+
+        <label class="lang-toggle">
+            <input type="checkbox" id="language">
+            <div class="lang-toggle-slider">
+                <div class="lang-toggle-icons">
+                    <span class="en-icon">EN</span>
+                    <span class="he-icon">HE</span>
+                </div>
+            </div>
+        </label>
+
         <h2>יוצר לינקים למייל</h2>
         <p class="subtitle">צור בקלות קישורים למייל עם כל הפרטים הדרושים</p>
         
-        <div class="form-group">
-            <label>כתובת מייל</label>
-            <input type="email" id="to" required>
+        <div class="scrollable-content">
+            <div class="form-group">
+                <label>כתובת מייל</label>
+                <input type="email" id="to" placeholder="example@domain.com" required>
+            </div>
+
+            <button class="add-fields-button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"></path>
+                </svg>
+                הוסף עותק
+            </button>
+
+            <div class="additional-fields">
+                <div class="form-group">
+                    <label>עותק (CC)</label>
+                    <input type="email" id="cc" placeholder="הזן כתובת מייל לעותק">
+                </div>
+
+                <div class="form-group">
+                    <label>עותק מוסתר (BCC)</label>
+                    <input type="email" id="bcc" placeholder="הזן כתובת מייל לעותק מוסתר">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>נושא</label>
+                <input type="text" id="subject" placeholder="הזן נושא להודעה">
+            </div>
+
+            <div class="form-group">
+                <label>תוכן</label>
+                <textarea id="body" placeholder="הזן את תוכן ההודעה"></textarea>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>עותק (CC)</label>
-            <input type="email" id="cc">
-        </div>
-
-        <div class="form-group">
-            <label>עותק מוסתר (BCC)</label>
-            <input type="email" id="bcc">
-        </div>
-
-        <div class="form-group">
-            <label>נושא</label>
-            <input type="text" id="subject">
-        </div>
-
-        <div class="form-group">
-            <label>תוכן</label>
-            <textarea id="body"></textarea>
-        </div>
-
-        <div class="buttons">
-            <button onclick="copyMailto()">העתק לינק ל-Mailto</button>
-            <button onclick="copyLink()">העתק לינק ל-Gmail</button>
+        <div class="buttons-section">
+            <div class="buttons">
+                <button onclick="copyMailto()" disabled data-tooltip="הזן כתובת מייל תקינה כדי להעתיק">העתק לינק ל-Mailto</button>
+                <button onclick="copyLink()" disabled data-tooltip="הזן כתובת מייל תקינה כדי להעתיק">העתק לינק ל-Gmail</button>
+            </div>
         </div>
     </div>
 
     <div id="copyStatus"></div>
 
+    <svg width="0" height="0">
+        <defs>
+            <clipPath id="moon">
+                <path d="m27.5,25c-6.904,0-12.5-5.596-12.5-12.5,0-5.76,3.897-10.606,9.196-12.055C22.843.155,21.44,0,20,0,8.954,0,0,8.954,0,20s8.954,20,20,20,20-8.954,20-20c0-1.44-.155-2.843-.445-4.196-1.449,5.3-6.296,9.196-12.055,9.196Z" />
+            </clipPath>
+        </defs>
+    </svg>
+
     <script>
+        // מניעת הודעות בררת המחדל של הדפדפן
+        document.addEventListener('invalid', (function(){
+            return function(e) {
+                e.preventDefault();
+            };
+        })(), true);
+
+        // הוספת וולידציה מותאמת בעת focus out
+        document.getElementById('to').addEventListener('blur', function() {
+            const t = translations[currentLanguage];
+            if (!this.value) {
+                this.setCustomValidity(t.required);
+                this.reportValidity();
+            } else if (!this.validity.valid) {
+                this.setCustomValidity(t.invalidEmail);
+                this.reportValidity();
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // עדכון הוולידציה בעת הקלדה
+        document.getElementById('to').addEventListener('input', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const t = translations[currentLanguage];
+            
+            if (!this.value) {
+                this.setCustomValidity(t.required);
+            } else if (!emailRegex.test(this.value)) {
+                this.setCustomValidity(t.invalidEmail);
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        function checkFields() {
+            const emailInput = document.getElementById('to');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValidEmail = emailRegex.test(emailInput.value);
+            
+            document.querySelectorAll('.buttons button').forEach(button => {
+                button.disabled = !isValidEmail;
+            });
+        }
+
+        // הוספת מאזין לאירע invalid
+        document.getElementById('to').addEventListener('invalid', function(e) {
+            e.preventDefault();
+            const t = translations[currentLanguage];
+            if (!this.value) {
+                this.setCustomValidity(t.required);
+            } else {
+                this.setCustomValidity(t.invalidEmail);
+            }
+        });
+
+        // Add event listeners to all inputs
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', checkFields);
+        });
+
+        // Run on page load to handle URL params
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -282,6 +760,8 @@
             if (urlParams.has('bcc')) document.getElementById('bcc').value = urlParams.get('bcc');
             if (urlParams.has('subject')) document.getElementById('subject').value = urlParams.get('subject');
             if (urlParams.has('body')) document.getElementById('body').value = urlParams.get('body');
+            
+            checkFields(); // Check fields after loading URL params
         }
 
         function generateMailto() {
@@ -309,7 +789,7 @@
         async function copyMailto() {
             try {
                 await navigator.clipboard.writeText(generateMailto());
-                showCopyStatus('הועתק לינק למייל!');
+                showCopyStatus('mailto');
             } catch (err) {
                 const textArea = document.createElement('textarea');
                 textArea.value = generateMailto();
@@ -317,9 +797,9 @@
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    showCopyStatus('הועתק לינק למייל!');
+                    showCopyStatus('mailto');
                 } catch (err) {
-                    showCopyStatus('לא ניתן להעתיק, נסה להעתיק ידנית');
+                    showCopyStatus('error');
                 }
                 document.body.removeChild(textArea);
             }
@@ -345,7 +825,7 @@
             
             try {
                 await navigator.clipboard.writeText(finalUrl);
-                showCopyStatus('הועתק לינק ל-Gmail!');
+                showCopyStatus('gmail');
             } catch (err) {
                 const textArea = document.createElement('textarea');
                 textArea.value = finalUrl;
@@ -353,15 +833,30 @@
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    showCopyStatus('הועתק לינק ל-Gmail!');
+                    showCopyStatus('gmail');
                 } catch (err) {
-                    showCopyStatus('לא ניתן להעתיק, נסה להעתיק ידנית');
+                    showCopyStatus('error');
                 }
                 document.body.removeChild(textArea);
             }
         }
 
-        function showCopyStatus(message) {
+        function showCopyStatus(type) {
+            const t = translations[currentLanguage];
+            let message;
+            
+            switch(type) {
+                case 'mailto':
+                    message = t.copied;
+                    break;
+                case 'gmail':
+                    message = t.copiedGmail;
+                    break;
+                case 'error':
+                    message = t.copyError;
+                    break;
+            }
+            
             let status = document.getElementById('copyStatus');
             status.textContent = message;
             status.classList.add('show');
@@ -369,6 +864,184 @@
                 status.classList.remove('show');
             }, 2000);
         }
+
+        const translations = {
+            he: {
+                title: 'יוצר לינקים למייל',
+                subtitle: 'צור בקלות קישורים למייל עם כל הפרטים הדרושים',
+                to: 'כתובת מייל',
+                cc: 'עותק (CC)',
+                bcc: 'עותק מוסתר (BCC)',
+                subject: 'נושא',
+                body: 'תוכן',
+                copyMailto: 'העתק לינק ל-Mailto',
+                copyGmail: 'העתק לינק ל-Gmail',
+                copied: 'הועתק לינק למייל!',
+                copiedGmail: 'הועתק לינק ל-Gmail!',
+                copyError: 'לא ניתן להעתיק, נסה להעתיק ידנית',
+                placeholders: {
+                    to: 'example@domain.com',
+                    cc: 'הזן כתובת מייל לעותק',
+                    bcc: 'הזן כתובת מייל לעותק מוסתר',
+                    subject: 'הזן נושא להודעה',
+                    body: 'הזן את תוכן ההודעה'
+                },
+                placeholder: 'הזן כתובת מייל כדי להתחיל ליצור קישורים',
+                required: 'שדה חובה',
+                invalidEmail: 'כתובת מייל לא תקינה',
+                buttonTooltip: 'הזן כתובת מייל תקינה כדי להעתיק',
+                addFields: 'הוסף עותקים',
+                hideFields: 'הסתר עותקים',
+                disabledButtonTooltip: 'הזן כתובת מייל תקינה כדי להמשיך'
+            },
+            en: {
+                title: 'Email Link Generator',
+                subtitle: 'Easily create email links with all the details you need',
+                to: 'Email Address',
+                cc: 'Copy (CC)',
+                bcc: 'Hidden Copy (BCC)',
+                subject: 'Subject',
+                body: 'Content',
+                copyMailto: 'Copy Mailto Link',
+                copyGmail: 'Copy Gmail Link',
+                copied: 'Email link copied!',
+                copiedGmail: 'Gmail link copied!',
+                copyError: 'Could not copy, try copying manually',
+                placeholders: {
+                    to: 'example@domain.com',
+                    cc: 'Enter email for copy',
+                    bcc: 'Enter email for hidden copy',
+                    subject: 'Enter message subject',
+                    body: 'Enter message content'
+                },
+                placeholder: 'Enter an email address to start creating links',
+                required: 'Required field',
+                invalidEmail: 'Invalid email address',
+                buttonTooltip: 'Enter a valid email to copy',
+                addFields: 'Add CC or BCC',
+                hideFields: 'Hide CC/BCC',
+                disabledButtonTooltip: 'Enter a valid email to continue'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || (navigator.language.startsWith('he') ? 'he' : 'en');
+
+        function toggleTheme() {
+            const themeToggle = document.getElementById('theme');
+            const root = document.documentElement;
+            const theme = themeToggle.checked ? 'light' : 'dark';
+            root.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleLanguage() {
+            const langToggle = document.getElementById('language');
+            currentLanguage = langToggle.checked ? 'en' : 'he';
+            document.documentElement.setAttribute('data-lang', currentLanguage);
+            document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
+            localStorage.setItem('language', currentLanguage);
+            updateUILanguage();
+        }
+
+        function updateUILanguage() {
+            const t = translations[currentLanguage];
+            
+            // עדכון כותרת וכותרת משנה
+            document.title = t.title;
+            document.querySelector('h2').textContent = t.title;
+            document.querySelector('.subtitle').textContent = t.subtitle;
+            
+            // עדכון תוויו
+            document.querySelectorAll('.form-group').forEach(group => {
+                const label = group.querySelector('label');
+                const input = group.querySelector('input, textarea');
+                const inputId = input.id;
+                
+                label.textContent = t[inputId];
+                input.placeholder = t.placeholders[inputId];
+            });
+            
+            // עדכון כפתורים
+            document.querySelectorAll('button').forEach(button => {
+                if (button.getAttribute('onclick') === 'copyMailto()') {
+                    button.textContent = t.copyMailto;
+                } else if (button.getAttribute('onclick') === 'copyLink()') {
+                    button.textContent = t.copyGmail;
+                } else if (button.classList.contains('add-fields-button')) {  // הוספת בדיקה לכפתור העותקים
+                    const isVisible = document.querySelector('.additional-fields').classList.contains('visible');
+                    button.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        ${isVisible ? t.hideFields : t.addFields}
+                    `;
+                }
+            });
+            
+            // עדכון טקסט ברירת המחדל
+            document.querySelector('[data-translate="placeholder"]').textContent = t.placeholder;
+            
+            // עדכון הודעות שגיאה
+            const emailInput = document.getElementById('to');
+            if (!emailInput.validity.valid) {
+                if (!emailInput.value) {
+                    emailInput.setCustomValidity(t.required);
+                } else {
+                    emailInput.setCustomValidity(t.invalidEmail);
+                }
+            }
+
+            // עדכון טקסט הוולידציה
+            document.querySelector('.validation-tooltip').textContent = t.required;
+            
+            // עדכון טולטיפ לכפתורים
+            document.querySelectorAll('button').forEach(button => {
+                if (button.disabled) {
+                    button.dataset.tooltip = t.disabledButtonTooltip;
+                } else {
+                    button.dataset.tooltip = t.buttonTooltip;
+                }
+            });
+        }
+
+        // אתחול בטעינת הדף
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedLanguage = localStorage.getItem('language') || currentLanguage;
+            
+            const themeToggle = document.getElementById('theme');
+            const langToggle = document.getElementById('language');
+            
+            themeToggle.checked = savedTheme === 'light';
+            langToggle.checked = savedLanguage === 'en';
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.documentElement.setAttribute('data-lang', savedLanguage);
+            document.documentElement.dir = savedLanguage === 'he' ? 'rtl' : 'ltr';
+            
+            themeToggle.addEventListener('change', toggleTheme);
+            langToggle.addEventListener('change', toggleLanguage);
+            
+            updateUILanguage();
+        });
+
+        document.querySelector('.add-fields-button').addEventListener('click', function() {
+            const t = translations[currentLanguage];
+            const additionalFields = document.querySelector('.additional-fields');
+            const isVisible = additionalFields.classList.contains('visible');
+            
+            // עדכון הטקסט לפי המצב הנוכחי
+            this.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"></path>
+                </svg>
+                ${!isVisible ? t.hideFields : t.addFields}
+            `;
+            
+            // שינוי המצב
+            this.classList.toggle('active');
+            additionalFields.classList.toggle('visible');
+        });
     </script>
 </body>
 </html> 
