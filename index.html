@@ -756,9 +756,9 @@
                 copiedGmail: 'הועתק לינק ל-Gmail!',
                 copyError: 'לא ניתן להעתיק, נסה להעתיק ידנית',
                 placeholders: {
-                    to: 'example@domain.com',
-                    cc: 'הזן כתובת מייל לעותק',
-                    bcc: 'הזן כתובת מייל לעותק מוסתר',
+                    to: 'example1@domain.com, example2@domain.com',
+                    cc: 'example1@domain.com, example2@domain.com',
+                    bcc: 'example1@domain.com, example2@domain.com',
                     subject: 'הזן נושא להודעה',
                     body: 'הזן את תוכן ההודעה'
                 },
@@ -784,9 +784,9 @@
                 copiedGmail: 'Gmail link copied!',
                 copyError: 'Could not copy, try copying manually',
                 placeholders: {
-                    to: 'example@domain.com',
-                    cc: 'Enter email for copy',
-                    bcc: 'Enter email for hidden copy',
+                    to: 'example1@domain.com, example2@domain.com',
+                    cc: 'example1@domain.com, example2@domain.com',
+                    bcc: 'example1@domain.com, example2@domain.com',
                     subject: 'Enter message subject',
                     body: 'Enter message content'
                 },
@@ -909,7 +909,7 @@
         });
 
         document.getElementById('emailForm').addEventListener('submit', (e) => {
-            e.preventDefault(); // מניעת שליחת הטופס
+            e.preventDefault(); // מניעת שליחת ה��ופס
         });
 
         // להסיר
