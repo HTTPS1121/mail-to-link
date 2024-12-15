@@ -104,7 +104,7 @@
             background-color: var(--text-secondary);
         }
 
-        /* מסתיר את פס הגלילה כשלא בשימוש */
+        /* מסתיר את פס הגל��לה כשלא בשימוש */
         .container:not(:hover)::-webkit-scrollbar-thumb {
             opacity: 0;
         }
@@ -870,7 +870,8 @@
             }
         };
 
-        let currentLanguage = navigator.language.startsWith('he') ? 'he' : 'en';
+        let currentLanguage = document.documentElement.lang || 
+                             navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
 
         // מאזין לשינויים בהגדרות המערכת
         const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -887,6 +888,7 @@
             document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
 
             // קביעת השפה לפי הגדרות המערכת
+            currentLanguage = navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
             document.documentElement.setAttribute('data-lang', currentLanguage);
             document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
             
@@ -895,7 +897,7 @@
 
         const languageMediaQuery = window.matchMedia('(prefers-language: he)');
         function handleSystemLanguageChange(e) {
-            currentLanguage = navigator.language.startsWith('he') ? 'he' : 'en';
+            currentLanguage = navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
             document.documentElement.setAttribute('data-lang', currentLanguage);
             document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
             updateUILanguage();
