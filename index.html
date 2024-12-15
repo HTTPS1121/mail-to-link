@@ -104,7 +104,7 @@
             background-color: var(--text-secondary);
         }
 
-        /* מסתיר את פס הגל��לה כשלא בשימוש */
+        /* מסתיר את פס הגלילה כשלא בשימוש */
         .container:not(:hover)::-webkit-scrollbar-thumb {
             opacity: 0;
         }
@@ -534,7 +534,8 @@
                            id="to" 
                            name="email"
                            autocomplete="email" 
-                           placeholder="example@domain.com" 
+                           placeholder="example1@domain.com, example2@domain.com" 
+                           multiple
                            required>
                 </div>
 
@@ -552,7 +553,8 @@
                                id="cc" 
                                name="cc"
                                autocomplete="cc-email" 
-                               placeholder="הזן כתובת מייל לעותק">
+                               placeholder="example1@domain.com, example2@domain.com"
+                               multiple>
                     </div>
 
                     <div class="form-group">
@@ -561,7 +563,8 @@
                                id="bcc" 
                                name="bcc"
                                autocomplete="bcc-email" 
-                               placeholder="הזן כתובת מייל לעותק מוסתר">
+                               placeholder="example1@domain.com, example2@domain.com"
+                               multiple>
                     </div>
                 </div>
 
@@ -606,11 +609,16 @@
 
         function checkFields() {
             const emailInput = document.getElementById('to');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const isValidEmail = emailRegex.test(emailInput.value);
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+(,\s*[^\s@]+@[^\s@]+\.[^\s@]+)*$/;
+            
+            // מפצל לפי פסיק או רווח ומסיר רווחים מיותרים
+            const emails = emailInput.value.split(/[,\s]+/).filter(email => email.length > 0);
+            
+            // בודק שכל הכתובות תקינות
+            const isValidEmail = emails.every(email => emailRegex.test(email));
             
             document.querySelectorAll('.buttons button').forEach(button => {
-                button.disabled = !isValidEmail;
+                button.disabled = !isValidEmail || emails.length === 0;
             });
         }
 
