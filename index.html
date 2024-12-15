@@ -104,7 +104,7 @@
             background-color: var(--text-secondary);
         }
 
-        /* מסתיר את פס הגלילה כשלא בשימוש */
+        /* מסתיר את פס הגל��לה כשלא בשימוש */
         .container:not(:hover)::-webkit-scrollbar-thumb {
             opacity: 0;
         }
@@ -527,39 +527,59 @@
         <p class="subtitle">צור בקלות קישורים למייל עם כל הפרטים הדרושים</p>
         
         <div class="scrollable-content">
-            <div class="form-group">
-                <label>כתובת מייל</label>
-                <input type="email" id="to" placeholder="example@domain.com" required>
-            </div>
-
-            <button class="add-fields-button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 9l-7 7-7-7"></path>
-                </svg>
-                הוסף עותק
-            </button>
-
-            <div class="additional-fields">
+            <form id="emailForm" autocomplete="on">
                 <div class="form-group">
-                    <label>עותק (CC)</label>
-                    <input type="email" id="cc" placeholder="הזן כתובת מייל לעותק">
+                    <label>כתובת מייל</label>
+                    <input type="email" 
+                           id="to" 
+                           name="email"
+                           autocomplete="email" 
+                           placeholder="example@domain.com" 
+                           required>
+                </div>
+
+                <button class="add-fields-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                    הוסף עותק
+                </button>
+
+                <div class="additional-fields">
+                    <div class="form-group">
+                        <label>עותק (CC)</label>
+                        <input type="email" 
+                               id="cc" 
+                               name="cc"
+                               autocomplete="cc-email" 
+                               placeholder="הזן כתובת מייל לעותק">
+                    </div>
+
+                    <div class="form-group">
+                        <label>עותק מוסתר (BCC)</label>
+                        <input type="email" 
+                               id="bcc" 
+                               name="bcc"
+                               autocomplete="bcc-email" 
+                               placeholder="הזן כתובת מייל לעותק מוסתר">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>עותק מוסתר (BCC)</label>
-                    <input type="email" id="bcc" placeholder="הזן כתובת מייל לעותק מוסתר">
+                    <label>נושא</label>
+                    <input type="text" 
+                           id="subject" 
+                           name="subject"
+                           placeholder="הזן נושא להודעה">
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>נושא</label>
-                <input type="text" id="subject" placeholder="הזן נושא להודעה">
-            </div>
-
-            <div class="form-group">
-                <label>תוכן</label>
-                <textarea id="body" placeholder="הזן את תוכן ההודעה"></textarea>
-            </div>
+                <div class="form-group">
+                    <label>תוכן</label>
+                    <textarea id="body" 
+                              autocomplete="off" 
+                              placeholder="הזן את תוכן ההודעה"></textarea>
+                </div>
+            </form>
         </div>
 
         <div class="buttons-section">
@@ -573,25 +593,7 @@
     <div id="copyStatus"></div>
 
     <script>
-        // מניעת הודעות בררת המחדל של הדפדפן
-        document.addEventListener('invalid', (function(){
-            return function(e) {
-                e.preventDefault();
-            };
-        })(), true);
-
-        // הוספת ואזין לאירע invalid
-        document.getElementById('to').addEventListener('invalid', function(e) {
-            e.preventDefault();
-            const t = translations[currentLanguage];
-            if (!this.value) {
-                this.setCustomValidity(t.required);
-            } else {
-                this.setCustomValidity(t.invalidEmail);
-            }
-        });
-
-        // הוספת מאזין לאירע invalid
+        // להסיר את הכפילות הזו - מופיע פעמיים
         document.getElementById('to').addEventListener('invalid', function(e) {
             e.preventDefault();
             const t = translations[currentLanguage];
@@ -802,7 +804,7 @@
 
         // מעדכן את קוד האתחול ב-DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
-            // קביעת ערכת הנ��שא לפי הגדרות המערכת
+            // קביעת ערכת הנשא לפי הגדרות המערכת
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
 
@@ -897,6 +899,17 @@
             this.classList.toggle('active');
             additionalFields.classList.toggle('visible');
         });
+
+        document.getElementById('emailForm').addEventListener('submit', (e) => {
+            e.preventDefault(); // מניעת שליחת הטופס
+        });
+
+        // להסיר
+        document.addEventListener('invalid', (function(){
+            return function(e) {
+                e.preventDefault();
+            };
+        })(), true);
     </script>
 </body>
 </html> 
