@@ -286,6 +286,9 @@
 
         function generateMailto() {
             let to = document.getElementById('to').value;
+            if (!to) {
+                return null;
+            }
             let cc = document.getElementById('cc').value;
             let bcc = document.getElementById('bcc').value;
             let subject = document.getElementById('subject').value;
@@ -307,12 +310,17 @@
         }
 
         async function copyMailto() {
+            const mailto = generateMailto();
+            if (!mailto) {
+                showCopyStatus('אנא מלא את כתובת המייל');
+                return;
+            }
             try {
-                await navigator.clipboard.writeText(generateMailto());
+                await navigator.clipboard.writeText(mailto);
                 showCopyStatus('הועתק לינק למייל!');
             } catch (err) {
                 const textArea = document.createElement('textarea');
-                textArea.value = generateMailto();
+                textArea.value = mailto;
                 document.body.appendChild(textArea);
                 textArea.select();
                 try {
@@ -325,8 +333,11 @@
             }
         }
 
-        async function copyLink() {
+        function generateGmailLink() {
             let to = document.getElementById('to').value;
+            if (!to) {
+                return null;
+            }
             let cc = document.getElementById('cc').value;
             let bcc = document.getElementById('bcc').value;
             let subject = document.getElementById('subject').value;
@@ -341,8 +352,15 @@
             if (subject) params.push(`su=${encodeURIComponent(subject)}`);
             if (body) params.push(`body=${encodeURIComponent(body)}`);
 
-            let finalUrl = gmailUrl + params.join('&');
-            
+            return gmailUrl + params.join('&');
+        }
+
+        async function copyLink() {
+            const finalUrl = generateGmailLink();
+            if (!finalUrl) {
+                showCopyStatus('אנא מלא את כתובת המייל');
+                return;
+            }
             try {
                 await navigator.clipboard.writeText(finalUrl);
                 showCopyStatus('הועתק לינק ל-Gmail!');
