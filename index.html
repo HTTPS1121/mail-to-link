@@ -104,7 +104,7 @@
             background-color: var(--text-secondary);
         }
 
-        /* מסתיר את פס הגלילה כשלא בשימוש */
+        /* מסתיר את פס הגל��לה כשלא בשימוש */
         .container:not(:hover)::-webkit-scrollbar-thumb {
             opacity: 0;
         }
@@ -517,6 +517,20 @@
             .scrollable-content {
                 margin: 0 -4px;
                 padding: 0 4px;
+            }
+        }
+
+        /* הוספת סגנון חדש */
+        input::placeholder,
+        textarea::placeholder {
+            direction: ltr;
+            text-align: right;  /* בגלל שאנחנו ב-RTL */
+        }
+
+        @media (max-width: 640px) {
+            input::placeholder,
+            textarea::placeholder {
+                font-size: 0.875rem;  /* הקטנת הגודל במובייל */
             }
         }
     </style>
