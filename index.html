@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>יוצר לינקים למייל</title>
+    <script>
+        // מניעת פלאש של ערכת נושא לא נכונה
+        const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzVCNUZFRiIgZD0iTTIwIDRINEMyLjkgNCAyIDQuOSAyIDZ2MTJjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY2YzAtMS4xLS45LTItMi0yek0yMCA4bC04IDVsLTgtNVY2bDggNWw4LTV2MnoiLz48L3N2Zz4=">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -379,119 +384,6 @@
             }
         }
 
-        .theme-toggle,
-        .lang-toggle {
-            position: absolute;
-            top: 1.5rem;
-            z-index: 1000;
-            transform: scale(0.8);
-            direction: ltr !important;
-        }
-
-        .theme-toggle { left: 1.5rem; }
-        .lang-toggle { right: 1.5rem; }
-
-        .theme-toggle input,
-        .lang-toggle input {
-            display: none;
-        }
-
-        .theme-toggle-slider,
-        .lang-toggle-slider {
-            position: relative;
-            width: 100px;
-            height: 45px;
-            background: var(--button-bg);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            isolation: isolate;
-        }
-
-        .theme-toggle-slider::after,
-        .lang-toggle-slider::after {
-            content: '';
-            position: absolute;
-            width: 37px;
-            height: 37px;
-            background: linear-gradient(45deg, var(--primary), #4f46e5);
-            mix-blend-mode: multiply;
-            border-radius: 50%;
-            top: 4px;
-            right: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 1;
-        }
-
-        .theme-toggle-icons,
-        .lang-toggle-icons {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 12px;
-            pointer-events: none;
-        }
-
-        .theme-toggle-icons svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-            stroke: white;
-            stroke-width: 0.75px;
-            transition: all 0.3s ease;
-            mix-blend-mode: screen;
-            filter: brightness(1.5);
-            z-index: 2;
-        }
-
-        .lang-toggle-icons span {
-            font-size: 16px;
-            font-weight: 500;
-            color: white;
-            transition: all 0.3s ease;
-            mix-blend-mode: screen;
-            filter: brightness(1.5);
-            z-index: 2;
-        }
-
-        .sun-icon, .en-icon { opacity: 0.25; }
-        .moon-icon, .he-icon { opacity: 1; }
-
-        .theme-toggle input:checked + .theme-toggle-slider::after,
-        .lang-toggle input:checked + .lang-toggle-slider::after {
-            right: calc(100% - 41px);
-        }
-
-        .theme-toggle input:checked + .theme-toggle-slider .sun-icon,
-        .lang-toggle input:checked + .lang-toggle-slider .en-icon {
-            opacity: 1;
-        }
-
-        .theme-toggle input:checked + .theme-toggle-slider .moon-icon,
-        .lang-toggle input:checked + .lang-toggle-slider .he-icon {
-            opacity: 0.25;
-        }
-
-        :root[data-theme="light"] .theme-toggle-icons svg,
-        :root[data-theme="light"] .lang-toggle-icons span {
-            fill: #1e293b;
-            stroke: #1e293b;
-            color: #1e293b;
-            mix-blend-mode: multiply;
-        }
-
-        :root[data-theme="light"] .theme-toggle-slider,
-        :root[data-theme="light"] .lang-toggle-slider {
-            background: rgba(0, 0, 0, 0.1);
-            border-color: rgba(0, 0, 0, 0.2);
-        }
-
         .form-group {
             position: relative;
         }
@@ -608,30 +500,6 @@
 </head>
 <body>
     <div class="container">
-        <label class="theme-toggle">
-            <input type="checkbox" id="theme">
-            <div class="theme-toggle-slider">
-                <div class="theme-toggle-icons">
-                    <svg class="sun-icon" height="24" width="24" viewBox="0 0 24 24">
-                        <path d="M12,17c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5ZM13,0h-2V5h2V0Zm0,19h-2v5h2v-5ZM5,11H0v2H5v-2Zm19,0h-5v2h5v-2Zm-2.81-6.78l-1.41-1.41-3.54,3.54,1.41,1.41,3.54-3.54ZM7.76,17.66l-1.41-1.41-3.54,3.54,1.41,1.41,3.54-3.54Zm0-11.31l-3.54-3.54-1.41,1.41,3.54,3.54,1.41-1.41Zm13.44,13.44l-3.54-3.54-1.41,1.41,3.54,3.54,1.41-1.41Z"/>
-                    </svg>
-                    <svg class="moon-icon" height="24" width="24" viewBox="0 0 24 24">
-                        <path d="M12.009,24A12.067,12.067,0,0,1,.075,10.725,12.121,12.121,0,0,1,10.1.152a13,13,0,0,1,5.03.206,2.5,2.5,0,0,1,1.8,1.8,2.47,2.47,0,0,1-.7,2.425c-4.559,4.168-4.165,10.645.807,14.412h0a2.5,2.5,0,0,1-.7,4.319A13.875,13.875,0,0,1,12.009,24Z"/>
-                    </svg>
-                </div>
-            </div>
-        </label>
-
-        <label class="lang-toggle">
-            <input type="checkbox" id="language">
-            <div class="lang-toggle-slider">
-                <div class="lang-toggle-icons">
-                    <span class="en-icon">EN</span>
-                    <span class="he-icon">HE</span>
-                </div>
-            </div>
-        </label>
-
         <h2>יוצר לינקים למייל</h2>
         <p class="subtitle">צור בקלות קישורים למייל עם כל הפרטים הדרושים</p>
         
@@ -888,7 +756,7 @@
                 },
                 placeholder: 'הזן כתובת מייל כדי להתחיל ליצור קישורים',
                 required: 'שדה חובה',
-                invalidEmail: 'כתובת מייל לא תקינה',
+                invalidEmail: 'כתובת מייל אינה תקינה',
                 buttonTooltip: 'הזן כתובת מייל תקינה כדי להעתיק',
                 addFields: 'הוסף עותקים',
                 hideFields: 'הסתר עותקים',
@@ -924,24 +792,37 @@
             }
         };
 
-        let currentLanguage = localStorage.getItem('language') || (navigator.language.startsWith('he') ? 'he' : 'en');
+        let currentLanguage = navigator.language.startsWith('he') ? 'he' : 'en';
 
-        function toggleTheme() {
-            const themeToggle = document.getElementById('theme');
-            const root = document.documentElement;
-            const theme = themeToggle.checked ? 'light' : 'dark';
-            root.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
+        // מאזין לשינויים בהגדרות המערכת
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        function handleSystemThemeChange(e) {
+            const theme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
         }
+        darkModeMediaQuery.addListener(handleSystemThemeChange);
 
-        function toggleLanguage() {
-            const langToggle = document.getElementById('language');
-            currentLanguage = langToggle.checked ? 'en' : 'he';
+        // מעדכן את קוד האתחול ב-DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // קביעת ערכת הנושא לפי הגדרות המערכת
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+
+            // קביעת השפה לפי הגדרות המערכת
             document.documentElement.setAttribute('data-lang', currentLanguage);
             document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
-            localStorage.setItem('language', currentLanguage);
+            
+            updateUILanguage();
+        });
+
+        const languageMediaQuery = window.matchMedia('(prefers-language: he)');
+        function handleSystemLanguageChange(e) {
+            currentLanguage = navigator.language.startsWith('he') ? 'he' : 'en';
+            document.documentElement.setAttribute('data-lang', currentLanguage);
+            document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
             updateUILanguage();
         }
+        languageMediaQuery.addListener(handleSystemLanguageChange);
 
         function updateUILanguage() {
             const t = translations[currentLanguage];
@@ -1003,27 +884,6 @@
                 }
             });
         }
-
-        // אתחול בטעינת הדף
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            const savedLanguage = localStorage.getItem('language') || currentLanguage;
-            
-            const themeToggle = document.getElementById('theme');
-            const langToggle = document.getElementById('language');
-            
-            themeToggle.checked = savedTheme === 'light';
-            langToggle.checked = savedLanguage === 'en';
-            
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.documentElement.setAttribute('data-lang', savedLanguage);
-            document.documentElement.dir = savedLanguage === 'he' ? 'rtl' : 'ltr';
-            
-            themeToggle.addEventListener('change', toggleTheme);
-            langToggle.addEventListener('change', toggleLanguage);
-            
-            updateUILanguage();
-        });
 
         document.querySelector('.add-fields-button').addEventListener('click', function() {
             const t = translations[currentLanguage];
