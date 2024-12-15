@@ -33,20 +33,6 @@
 4. Click to copy either the mailto: link or Gmail link
 5. Paste the generated link anywhere
 
-### 💡 Advanced Features
-
-- **Smart Validation**: Real-time email validation
-- **Persistent Settings**: Remembers your theme/language preferences
-- **Mobile Optimized**: Perfect for both desktop and mobile use
-- **Accessibility**: Fully keyboard navigable
-
-### 🛠️ Technical Details
-
-- Pure HTML/CSS/JavaScript
-- No external dependencies
-- Lightweight
-- Works offline
-
 ---
 
 ## 📖 תיעוד בעברית
@@ -70,17 +56,3 @@
 3. הוסף נושא ותוכן הודעה במידת הצורך
 4. לחץ להעתקת קישור mailto: או קישור Gmail
 5. הדבק את הקישור שנוצר בכל מקום
-
-### 💡 תכונות מתקדמות
-
-- **וולידציה חכמה**: בדיקת תקינות מיילים בזמן אמת
-- **שמירת העדפות**: זוכר את העדפות המצב והשפה שלך
-- **מותאם למובייל**: מושלם לשימוש במחשב ובנייד
-- **נגישות**: ניווט מלא באמצעות המקלדת
-
-### 🛠️ פרטים טכניים
-
-- HTML/CSS/JavaScript טהור
-- ללא תלות בספריות חיצוניות
-- קל משקל
-- עובד במצב לא מקוון

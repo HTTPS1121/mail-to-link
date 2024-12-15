@@ -77,29 +77,36 @@
             overflow-y: auto;
             overflow-x: hidden;
             scrollbar-width: thin;
-            scrollbar-color: var(--primary) transparent;
+            scrollbar-color: var(--border) transparent;
             display: flex;
             flex-direction: column;
         }
 
         /* עיצוב פס הגלילה עבור Chrome/Safari */
         .container::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         .container::-webkit-scrollbar-track {
             background: transparent;
+            margin: 8px 0;
         }
 
         .container::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
+            background-color: var(--border);
             border-radius: 20px;
-            border: 2px solid transparent;
+            border: 1px solid transparent;
             background-clip: padding-box;
+            transition: background-color 0.2s ease;
         }
 
         .container::-webkit-scrollbar-thumb:hover {
-            background-color: var(--primary-hover);
+            background-color: var(--text-secondary);
+        }
+
+        /* מסתיר את פס הגלילה כשלא בשימוש */
+        .container:not(:hover)::-webkit-scrollbar-thumb {
+            opacity: 0;
         }
 
         h2 {
@@ -326,16 +333,7 @@
                 max-height: calc(100dvh - 32px);
             }
 
-            /* טוגלים */
-            .theme-toggle,
-            .lang-toggle {
-                transform: scale(0.7);
-                top: 0.75rem;
-            }
-            .theme-toggle { left: 0.75rem; }
-            .lang-toggle { right: 0.75rem; }
-
-            /* כותרות */
+            /* טותרות */
             h2 {
                 font-size: 1.5rem;
                 margin-top: 32px;
@@ -360,7 +358,7 @@
             /* כפתורים */
             .buttons {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 12px;
             }
             button {
                 padding: 12px;
@@ -368,12 +366,13 @@
                 min-height: 44px;
             }
             .buttons-section {
-                margin-top: 0.75rem;
+                margin-top: 1rem;
+                padding-top: 0.75rem;
             }
 
             /* פס גלילה */
             .container::-webkit-scrollbar {
-                width: 4px;
+                width: 3px;
             }
 
             /* הודעת העתקה */
@@ -462,12 +461,25 @@
         .scrollable-content {
             flex: 1;
             overflow-y: auto;
-            padding-right: 8px;
-            margin-right: -8px;
+            margin: 0 -8px;
+            padding: 0 8px;
         }
 
         .buttons-section {
-            margin-top: 0;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            position: relative;
+            background: var(--container-bg);
+        }
+
+        .buttons-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -40px;
+            right: -40px;
+            height: 1px;
+            background: var(--border);
         }
 
         .add-fields-button {
@@ -493,7 +505,18 @@
             }
 
             .buttons-section {
-                margin-top: 0;
+                margin-top: 1rem;
+                padding-top: 0.75rem;
+            }
+
+            .buttons-section::before {
+                left: -16px;
+                right: -16px;
+            }
+
+            .scrollable-content {
+                margin: 0 -4px;
+                padding: 0 4px;
             }
         }
     </style>
@@ -549,14 +572,6 @@
 
     <div id="copyStatus"></div>
 
-    <svg width="0" height="0">
-        <defs>
-            <clipPath id="moon">
-                <path d="m27.5,25c-6.904,0-12.5-5.596-12.5-12.5,0-5.76,3.897-10.606,9.196-12.055C22.843.155,21.44,0,20,0,8.954,0,0,8.954,0,20s8.954,20,20,20,20-8.954,20-20c0-1.44-.155-2.843-.445-4.196-1.449,5.3-6.296,9.196-12.055,9.196Z" />
-            </clipPath>
-        </defs>
-    </svg>
-
     <script>
         // מניעת הודעות בררת המחדל של הדפדפן
         document.addEventListener('invalid', (function(){
@@ -565,31 +580,25 @@
             };
         })(), true);
 
-        // הוספת וולידציה מותאמת בעת focus out
-        document.getElementById('to').addEventListener('blur', function() {
+        // הוספת ואזין לאירע invalid
+        document.getElementById('to').addEventListener('invalid', function(e) {
+            e.preventDefault();
             const t = translations[currentLanguage];
             if (!this.value) {
                 this.setCustomValidity(t.required);
-                this.reportValidity();
-            } else if (!this.validity.valid) {
-                this.setCustomValidity(t.invalidEmail);
-                this.reportValidity();
             } else {
-                this.setCustomValidity('');
+                this.setCustomValidity(t.invalidEmail);
             }
         });
 
-        // עדכון הוולידציה בעת הקלדה
-        document.getElementById('to').addEventListener('input', function() {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // הוספת מאזין לאירע invalid
+        document.getElementById('to').addEventListener('invalid', function(e) {
+            e.preventDefault();
             const t = translations[currentLanguage];
-            
             if (!this.value) {
                 this.setCustomValidity(t.required);
-            } else if (!emailRegex.test(this.value)) {
-                this.setCustomValidity(t.invalidEmail);
             } else {
-                this.setCustomValidity('');
+                this.setCustomValidity(t.invalidEmail);
             }
         });
 
@@ -602,17 +611,6 @@
                 button.disabled = !isValidEmail;
             });
         }
-
-        // הוספת מאזין לאירע invalid
-        document.getElementById('to').addEventListener('invalid', function(e) {
-            e.preventDefault();
-            const t = translations[currentLanguage];
-            if (!this.value) {
-                this.setCustomValidity(t.required);
-            } else {
-                this.setCustomValidity(t.invalidEmail);
-            }
-        });
 
         // Add event listeners to all inputs
         document.querySelectorAll('input, textarea').forEach(input => {
@@ -804,7 +802,7 @@
 
         // מעדכן את קוד האתחול ב-DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
-            // קביעת ערכת הנושא לפי הגדרות המערכת
+            // קביעת ערכת הנ��שא לפי הגדרות המערכת
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
 
@@ -858,9 +856,6 @@
                     `;
                 }
             });
-            
-            // עדכון טקסט ברירת המחדל
-            document.querySelector('[data-translate="placeholder"]').textContent = t.placeholder;
             
             // עדכון הודעות שגיאה
             const emailInput = document.getElementById('to');
