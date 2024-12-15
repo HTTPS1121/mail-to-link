@@ -520,11 +520,23 @@
             }
         }
 
-        /* הוספת סגנון חדש */
+        /* מעדכן את הסגנון הקיים */
         input::placeholder,
         textarea::placeholder {
-            direction: ltr;
-            text-align: right;  /* בגלל שאנחנו ב-RTL */
+            direction: inherit; /* במקום ltr קבוע */
+            text-align: inherit; /* במקום right קבוע */
+        }
+
+        /* מוסיף סגנון ספציפי למצב אנגלית */
+        :root[dir="ltr"] input::placeholder,
+        :root[dir="ltr"] textarea::placeholder {
+            text-align: left;
+        }
+
+        /* מוסיף סגנון ספציפי למצב עברית */
+        :root[dir="rtl"] input::placeholder,
+        :root[dir="rtl"] textarea::placeholder {
+            text-align: right;
         }
 
         @media (max-width: 640px) {
@@ -844,10 +856,10 @@
                 title: 'Email Link Generator',
                 subtitle: 'Easily create email links with all the details you need',
                 to: 'Email Address',
-                cc: 'Copy (CC)',
-                bcc: 'Hidden Copy (BCC)',
+                cc: 'CC',
+                bcc: 'BCC',
                 subject: 'Subject',
-                body: 'Content',
+                body: 'Message',
                 copyMailto: 'Copy Mailto Link',
                 copyGmail: 'Copy Gmail Link',
                 copied: 'Email link copied!',
@@ -864,63 +876,65 @@
                 required: 'Required field',
                 invalidEmail: 'Invalid email address',
                 buttonTooltip: 'Enter a valid email to copy',
-                addFields: 'Add CC or BCC',
+                addFields: 'Add CC/BCC',
                 hideFields: 'Hide CC/BCC',
                 disabledButtonTooltip: 'Enter a valid email to continue'
             }
         };
 
-        let currentLanguage = document.documentElement.lang || 
-                             navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
-
-        // מאזין לשינויים בהגדרות המערכת
-        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        function handleSystemThemeChange(e) {
-            const theme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
+        // ביד אחרי הגדרת ה-translations
+        function detectLanguage() {
+            return navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
         }
-        darkModeMediaQuery.addListener(handleSystemThemeChange);
+
+        let currentLanguage = detectLanguage();
 
         // מעדכן את קוד האתחול ב-DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
-            // קביעת ערכת הנשא לפי הגדרות המערכת
+            // קדכון הממשק
+            updateUILanguage();
+            
+            // בדיקת ערכת נושא
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+        });
 
-            // קביעת השפה לפי הגדרות המערכת
-            currentLanguage = navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
-            document.documentElement.setAttribute('data-lang', currentLanguage);
-            document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
-            
+        window.addEventListener('languagechange', () => {
+            currentLanguage = detectLanguage();
             updateUILanguage();
         });
 
-        const languageMediaQuery = window.matchMedia('(prefers-language: he)');
-        function handleSystemLanguageChange(e) {
-            currentLanguage = navigator.language.toLowerCase().split('-')[0] === 'he' ? 'he' : 'en';
-            document.documentElement.setAttribute('data-lang', currentLanguage);
-            document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
-            updateUILanguage();
-        }
-        languageMediaQuery.addListener(handleSystemLanguageChange);
-
         function updateUILanguage() {
             const t = translations[currentLanguage];
+            
+            // עדכון כיוון הדף בהתאם לשפה
+            document.documentElement.dir = currentLanguage === 'he' ? 'rtl' : 'ltr';
             
             // עדכון כותרת וכותרת משנה
             document.title = t.title;
             document.querySelector('h2').textContent = t.title;
             document.querySelector('.subtitle').textContent = t.subtitle;
             
-            // עדכון תוויו
+            // עדכו�� תוויות ופלייסהולדרים
             document.querySelectorAll('.form-group').forEach(group => {
                 const label = group.querySelector('label');
                 const input = group.querySelector('input, textarea');
                 const inputId = input.id;
                 
-                label.textContent = t[inputId];
-                input.placeholder = t.placeholders[inputId];
+                if (t[inputId]) {
+                    label.textContent = t[inputId];
+                }
+                if (t.placeholders[inputId]) {
+                    input.placeholder = t.placeholders[inputId];
+                }
             });
+
+            // עדכון טקסטים בפוטר
+            if (currentLanguage === 'he') {
+                document.querySelector('.footer p').innerHTML = 'נבנה ע״י <a href="https://github.com/https1121" target="_blank" rel="noopener">Https1121</a><span class="separator">•</span><a href="https://github.com/https1121/mailtolink" target="_blank" rel="noopener">קוד מקור</a>';
+            } else {
+                document.querySelector('.footer p').innerHTML = 'Built by <a href="https://github.com/https1121" target="_blank" rel="noopener">Https1121</a><span class="separator">•</span><a href="https://github.com/https1121/mailtolink" target="_blank" rel="noopener">Source Code</a>';
+            }
             
             // עדכון כפתורים
             document.querySelectorAll('button').forEach(button => {
@@ -928,7 +942,7 @@
                     button.textContent = t.copyMailto;
                 } else if (button.getAttribute('onclick') === 'copyLink()') {
                     button.textContent = t.copyGmail;
-                } else if (button.classList.contains('add-fields-button')) {  // הוספת בדיקה לכפתור העותקים
+                } else if (button.classList.contains('add-fields-button')) {
                     const isVisible = document.querySelector('.additional-fields').classList.contains('visible');
                     button.innerHTML = `
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -936,28 +950,6 @@
                         </svg>
                         ${isVisible ? t.hideFields : t.addFields}
                     `;
-                }
-            });
-            
-            // עדכון הודעות שגיאה
-            const emailInput = document.getElementById('to');
-            if (!emailInput.validity.valid) {
-                if (!emailInput.value) {
-                    emailInput.setCustomValidity(t.required);
-                } else {
-                    emailInput.setCustomValidity(t.invalidEmail);
-                }
-            }
-
-            // עדכון טקסט הוולידציה
-            document.querySelector('.validation-tooltip').textContent = t.required;
-            
-            // עדכון טולטיפ לכפתורים
-            document.querySelectorAll('button').forEach(button => {
-                if (button.disabled) {
-                    button.dataset.tooltip = t.disabledButtonTooltip;
-                } else {
-                    button.dataset.tooltip = t.buttonTooltip;
                 }
             });
         }
