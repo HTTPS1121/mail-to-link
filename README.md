@@ -7,7 +7,7 @@
 <p>Create professional email links with a modern, user-friendly interface</p>
 <p>צור קישורי מייל מקצועיים עם ממשק מודרני וידידותי למשתמש</p>
 
-<h3><a href="https://https://1121.github.io/mailtolink/">🌐 Try it now! | נסה עכשיו!</a></h3>
+<h3><a href="https://https1121.github.io/mailtolink/">🌐 Try it now! | נסה עכשיו!</a></h3>
 
 </div>
 
