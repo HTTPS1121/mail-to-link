@@ -104,7 +104,7 @@
             background-color: var(--text-secondary);
         }
 
-        /* מסתיר את פס הגל��לה כשלא בשימוש */
+        /* מסתיר את פס הגלילה כשלא בשימוש */
         .container:not(:hover)::-webkit-scrollbar-thumb {
             opacity: 0;
         }
@@ -533,6 +533,54 @@
                 font-size: 0.875rem;  /* הקטנת הגודל במובייל */
             }
         }
+
+        .footer {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .footer p {
+            background: var(--container-bg);
+            padding: 8px 16px;
+            border-radius: 99px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            pointer-events: all;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-hover);
+        }
+
+        .footer .separator {
+            margin: 0 8px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 640px) {
+            .footer {
+                bottom: 8px;
+            }
+            
+            .footer p {
+                padding: 6px 12px;
+                font-size: 0.8125rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -608,6 +656,14 @@
     </div>
 
     <div id="copyStatus"></div>
+
+    <footer class="footer">
+        <p>
+            נבנה ע״י <a href="https://github.com/https1121" target="_blank" rel="noopener">Https1121</a>
+            <span class="separator">•</span>
+            <a href="https://github.com/https1121/mailtolink" target="_blank" rel="noopener">קוד מקור</a>
+        </p>
+    </footer>
 
     <script>
         // להסיר את הכפילות הזו - מופיע פעמיים
@@ -923,7 +979,7 @@
         });
 
         document.getElementById('emailForm').addEventListener('submit', (e) => {
-            e.preventDefault(); // מניעת שליחת ה��ופס
+            e.preventDefault(); // מניעת שליחת הפוסט
         });
 
         // להסיר
